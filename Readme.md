@@ -1,4 +1,4 @@
-# 🔍 Adoption Status Query Service - Shaggy Mission
+# 🔄 Adoption Status Update Service - Shaggy Mission
 
 <div align="center">
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
@@ -9,52 +9,54 @@
 </div>
 
 <div align="center">
-  <h3>🔍 Pet Adoption Status Query Microservice</h3>
-  <p><em>Part of the Shaggy Mission ecosystem - Real-time adoption status checking for informed decisions! 🐕🐱</em></p>
+  <h3>🔄 Pet Adoption Status Update Microservice</h3>
+  <p><em>Part of the Shaggy Mission ecosystem - Update and manage pet adoption status transitions! 🐕🐱</em></p>
 </div>
 
 ---
 
 ## 🌟 Overview
 
-The **Adoption Status Query Service** is a vital microservice in the Shaggy Mission platform that provides real-time adoption status information for individual pets. This service enables users, rescue organizations, and other system components to quickly check the current adoption status of any pet using their unique identifier.
+The **Adoption Status Update Service** is a specialized microservice in the Shaggy Mission platform that handles the dynamic updating of pet adoption statuses. This service enables rescue organizations, adoption centers, and volunteers to efficiently manage status transitions throughout the adoption lifecycle, ensuring accurate and real-time tracking of pet availability.
 
 ## 🎯 What This Service Does
 
-- **Real-time Status Queries**: Get current adoption status for any pet by ID
-- **Instant Availability Check**: Verify if pets are available, reserved, or adopted
-- **Status Information Retrieval**: Access complete status records with notes and timestamps
-- **Integration Support**: Provide status data for other microservices and applications
-- **User Experience Enhancement**: Enable real-time status updates in web and mobile apps
-- **Administrative Oversight**: Support management queries and status verification
-- **Decision Support**: Provide accurate status information for adoption workflows
+- **Status Updates**: Update existing adoption status records for pets by Pet ID
+- **Workflow Transitions**: Seamlessly transition pets between adoption states
+- **Dynamic Management**: Update status and notes for existing pets in the system
+- **Data Validation**: Ensure status transitions follow valid enum constraints
+- **Notes Enhancement**: Add or update contextual information during status changes
+- **Timestamp Tracking**: Automatic timestamp updates for all status modifications
+- **Integration Support**: Designed to work with existing adoption management systems
 
 ## 🛠️ Tech Stack
 
 - **Runtime**: Node.js with Express.js framework
 - **Database**: MongoDB with Mongoose ODM
-- **Query Optimization**: Efficient single-document retrieval by unique petId
-- **RESTful Design**: Clean GET endpoint with path parameters
+- **Data Validation**: Mongoose schema validation with enum constraints
+- **Status Management**: PUT endpoint for status updates by Pet ID
+- **RESTful Design**: Clean RESTful API design patterns
 - **Documentation**: Swagger UI for interactive API documentation
 - **Error Handling**: Comprehensive validation and error management
-- **Performance**: Optimized queries for real-time applications
 
 ## 📡 API Endpoints
 
-### Adoption Status Query
-**`GET /adoption/status/:petId`**
-- Retrieves the current adoption status for a specific pet
-- Returns complete status record with notes and timestamps
-- Provides real-time status information for decision-making
-- Supports integration with other services and applications
+### Adoption Status Update
+**`PUT /adoption/status/:petId`**
+- Updates existing adoption status record for a specific pet
+- Validates petId parameter and request body
+- Supports status transitions and notes updates
+- Returns updated status record with new timestamp
 
-**Path Parameters:**
-- `petId` (required): Unique pet identifier (MongoDB ObjectId format)
+**Request Parameters:**
+- `petId` (path): MongoDB ObjectId of the pet to update
 
-**Request Examples:**
-```bash
-GET /adoption/status/64f8b2a1c3d4e5f6a7b8c9d0
-GET /adoption/status/64f8b2a1c3d4e5f6a7b8c9d1
+**Request Body:**
+```json
+{
+  "status": "reserved",
+  "notes": "Reserved by Johnson family, pending home visit"
+}
 ```
 
 **Successful Response (200):**
@@ -62,75 +64,84 @@ GET /adoption/status/64f8b2a1c3d4e5f6a7b8c9d1
 {
   "_id": "64f8b2a1c3d4e5f6a7b8c9d4",
   "petId": "64f8b2a1c3d4e5f6a7b8c9d0",
-  "status": "not_adopted",
-  "notes": "Healthy golden retriever ready for adoption",
-  "updatedAt": "2024-01-15T10:30:00.000Z",
+  "status": "reserved",
+  "notes": "Reserved by Johnson family, pending home visit",
+  "updatedAt": "2024-01-15T14:30:00.000Z",
   "__v": 0
 }
 ```
 
 **Error Responses:**
-- `404 Not Found`: No status record exists for the pet
+- `400 Bad Request`: Invalid petId or request data
   ```json
   {
-    "message": "Status not found for this pet."
+    "message": "Invalid petId format"
+  }
+  ```
+- `404 Not Found`: Pet status not found
+  ```json
+  {
+    "message": "Pet status not found"
   }
   ```
 - `500 Internal Server Error`: Database or server issues
   ```json
   {
-    "message": "Failed to fetch status",
+    "message": "Failed to update status",
     "error": "Database connection failed"
   }
   ```
 
 ### API Documentation
-**`GET /statusId-docs`**
+**`GET /updateStatus-docs`**
 - Interactive Swagger UI documentation
 - Complete API specification with examples
 - Request/response schemas and validation rules
-- Try-it-out functionality for testing status queries
+- Try-it-out functionality for testing the update endpoint
 
 ## 🔧 Core Functionality
 
-### Status Query System
-The service provides real-time access to adoption status information:
+### Status Update System
+The service supports dynamic updates between all adoption statuses:
 
-- **Fast Retrieval**: Efficient MongoDB queries by unique petId
-- **Complete Records**: Full status information including notes and timestamps
-- **Real-time Data**: Always returns the most current status information
-- **Error Handling**: Proper responses for missing or invalid pet IDs
-
-### Status Types Returned
 - **`not_adopted`**: Pet is available for adoption
 - **`reserved`**: Pet is reserved by a potential adopter
 - **`adopted`**: Pet has been successfully adopted
 
-### Integration Features
-- **RESTful Design**: Standard HTTP GET method with path parameters
-- **JSON Response**: Structured data perfect for API integration
-- **Error Consistency**: Standardized error responses across the platform
-- **Performance Optimized**: Fast queries suitable for real-time applications
+### Status Transition Examples
+```
+not_adopted → reserved  (Pet gets reserved)
+reserved → adopted      (Adoption finalized)
+reserved → not_adopted  (Reservation cancelled)
+adopted → not_adopted   (Adoption fell through - rare)
+```
+
+### Update Features
+- **Flexible Updates**: Update status, notes, or both
+- **Timestamp Management**: Automatic updatedAt field refresh
+- **Validation**: Enum validation for status field
+- **Error Handling**: Comprehensive error responses
+- **Pet ID Validation**: Validates MongoDB ObjectId format
 
 ## 🌐 Service Integration
 
 This microservice integrates seamlessly with other Shaggy Mission platform components:
 
-- **Pet List Service**: Filter and display pets based on adoption status
-- **Mobile Applications**: Real-time status verification for user interfaces
-- **Administrative Dashboard**: Status monitoring and reporting capabilities
-- **Notification System**: Trigger alerts based on status information
-- **Adoption Workflow**: Support decision-making throughout adoption process
-- **External APIs**: Provide status data to partner organizations
+- **Adoption Status Service**: Works with status creation service
+- **Pet Management System**: Updates pet availability in real-time
+- **Notification System**: Triggers alerts when status changes
+- **Administrative Dashboard**: Provides real-time status updates
+- **Mobile Applications**: Supports mobile adoption workflow updates
+- **Reporting Services**: Tracks adoption progress and metrics
 
-## 🔒 Data Security & Performance
+## 🔒 Data Security & Validation
 
-- **Efficient Queries**: Optimized MongoDB findOne queries by unique petId
-- **Fast Response**: Minimal data transfer with focused response structure
+- **Pet ID Validation**: Validates MongoDB ObjectId format
+- **Schema Validation**: Mongoose schema ensures data integrity
+- **Enum Validation**: Restrict status values to valid options
+- **Input Sanitization**: Validate and sanitize all input data
 - **Error Handling**: Comprehensive validation and error management
-- **Input Validation**: Proper handling of invalid or missing pet IDs
-- **Database Optimization**: Indexed queries for maximum performance
-- **Connection Management**: Efficient database connection handling
+- **Data Consistency**: Maintain consistent adoption workflow states
 
 ## 🗃️ Database Schema
 
@@ -149,22 +160,26 @@ This microservice integrates seamlessly with other Shaggy Mission platform compo
 }
 ```
 
-### Query Pattern
-```javascript
-// Find status by petId
-AdoptionStatus.findOne({ petId: req.params.petId })
+### Status Update Flow
+```
+1. Receive PUT request with petId parameter
+2. Validate petId format (MongoDB ObjectId)
+3. Find existing status record
+4. Update status and/or notes
+5. Save with new timestamp
+6. Return updated record
 ```
 
 ## 📚 API Documentation
 
-Complete API documentation is available through Swagger UI at `/statusId-docs` when the service is running. The documentation includes:
+Complete API documentation is available through Swagger UI at `/updateStatus-docs` when the service is running. The documentation includes:
 
-- **Interactive endpoint testing** with real pet ID examples
+- **Interactive endpoint testing** with status update examples
 - **Comprehensive request/response schemas** with validation rules
-- **Status type documentation** with detailed explanations
-- **Error handling scenarios** and proper HTTP status codes
+- **Status transition examples** and workflow explanations
+- **Error handling scenarios** and status codes
+- **Pet ID validation** requirements and formats
 - **Integration examples** and common use cases
-- **Performance considerations** and best practices
 
 ## 🔧 Development
 
@@ -173,7 +188,7 @@ Complete API documentation is available through Swagger UI at `/statusId-docs` w
 ├── config/
 │   └── db.js                         # MongoDB connection setup
 ├── controllers/
-│   └── status.controller.js          # Status query logic
+│   └── status.controller.js          # Status update logic
 ├── models/
 │   └── status.model.js               # Mongoose AdoptionStatus schema
 ├── routes/
@@ -192,115 +207,105 @@ npm install
 # Start development server
 npm start
 
-# Server runs on port 3013
+# Server runs on port 3014
 ```
 
 ### Testing the API
 ```bash
-# Query pet adoption status
-curl -X GET http://localhost:3013/adoption/status/64f8b2a1c3d4e5f6a7b8c9d0
+# Update adoption status
+curl -X PUT http://localhost:3014/adoption/status/64f8b2a1c3d4e5f6a7b8c9d0 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "reserved",
+    "notes": "Reserved by Johnson family, pending home visit"
+  }'
 
-# Expected response: 200 OK with status object
-# Or: 404 Not Found if pet status doesn't exist
+# Expected response: 200 OK with updated status object
 ```
 
-## 🔄 Query Workflows
+## 🔄 Status Update Workflows
 
-### User Status Check Process
-1. **Pet Discovery**: User finds interesting pet in listing
-2. **Status Verification**: Query current adoption status
-3. **Decision Making**: User decides based on availability
-4. **Action Taking**: User proceeds with interest or continues browsing
+### Reservation Process
+1. **Pet Available**: Pet status is "not_adopted"
+2. **Interest Shown**: Update status to "reserved" with adopter details
+3. **Add Notes**: Include reservation details and contact information
+4. **Timestamp Update**: Automatic timestamp for tracking
 
-### Application Integration
-1. **List Service**: Check status before displaying pets
-2. **Mobile App**: Real-time status updates during browsing
-3. **Admin Panel**: Monitor status for management purposes
-4. **Notification**: Trigger alerts based on status changes
+### Adoption Finalization
+1. **Reserved Pet**: Pet currently has "reserved" status
+2. **Adoption Complete**: Update status to "adopted"
+3. **Final Notes**: Add adoption completion details and new family info
+4. **Success Tracking**: Record successful adoption with timestamp
 
-### Administrative Use Cases
-- **Status Monitoring**: Track adoption progress across all pets
-- **Data Verification**: Confirm status accuracy for reporting
-- **Workflow Support**: Enable status-based decision making
-- **Integration Testing**: Verify status data consistency
+### Status Corrections
+1. **Reservation Cancelled**: Update "reserved" back to "not_adopted"
+2. **Adoption Reversal**: Update "adopted" back to "not_adopted" (rare cases)
+3. **Information Updates**: Update notes without changing status
+4. **Data Maintenance**: Correct any data inconsistencies
 
 ## ⚡ Performance Considerations
 
-### Query Optimization
-- **Indexed Queries**: petId field optimized for fast lookups
-- **Single Document**: Efficient findOne operation
-- **Minimal Data**: Focused response with only necessary information
+### Database Optimization
+- **Indexed Queries**: petId field indexed for efficient lookups
+- **Atomic Updates**: Single database operation for updates
+- **Minimal Data Transfer**: Only send necessary fields
 - **Connection Pooling**: Efficient MongoDB connection management
 
-### Real-time Performance
-- **Fast Response**: Optimized for real-time applications
-- **Low Latency**: Efficient database queries and response handling
-- **Memory Efficient**: Minimal memory footprint per request
-- **Scalable Design**: Architecture supports high query volumes
+### Update Efficiency
+- **Single Document Updates**: Efficient MongoDB findOneAndUpdate
+- **Selective Updates**: Only update provided fields
+- **Timestamp Automation**: Automatic timestamp management
+- **Validation Caching**: Efficient enum validation
 
 ## 🚀 Future Enhancements
 
-- **Caching Layer**: Redis caching for frequently queried pets
-- **Batch Queries**: Support multiple pet status queries in single request
-- **Status History**: Track status change history and timeline
-- **Real-time Updates**: WebSocket support for live status updates
-- **Query Analytics**: Track popular pets and query patterns
-- **Advanced Filtering**: Support status queries with additional criteria
+- **Bulk Updates**: Support updating multiple pet statuses
+- **Status History**: Track complete status change history
+- **Conditional Updates**: Update based on current status conditions
+- **Batch Processing**: Handle large-scale status updates
+- **Real-time Notifications**: WebSocket support for live updates
+- **Status Automation**: Automatic status updates based on triggers
+- **Advanced Validation**: Business rule validation for status transitions
 - **Integration Webhooks**: Notify external systems of status changes
-- **Performance Monitoring**: Detailed query performance metrics
 
 ## 📊 Common Use Cases
 
-### Pet Browsing Experience
-- **Availability Check**: Verify pet is still available before showing details
-- **Real-time Updates**: Update UI based on current status
-- **Decision Support**: Provide accurate information for adoption decisions
-- **Mobile Optimization**: Fast status checks for mobile applications
+### Daily Operations
+- **Status Maintenance**: Update pet statuses as situations change
+- **Reservation Management**: Track pets reserved by potential adopters
+- **Adoption Processing**: Update pets to adopted status when finalized
+- **Data Corrections**: Fix incorrect status information
 
-### Administrative Operations
-- **Status Verification**: Confirm pet status for management decisions
-- **Workflow Monitoring**: Track pets through adoption process
-- **Data Integrity**: Verify status consistency across systems
-- **Reporting**: Generate status-based reports and analytics
+### Workflow Management
+- **Volunteer Updates**: Field workers update pet statuses remotely
+- **Administrative Review**: Supervisors review and update status records
+- **Integration Updates**: External systems trigger status updates
+- **Batch Processing**: Update multiple pets during scheduled operations
 
-### Service Integration
-- **API Composition**: Combine with other services for complete pet information
-- **Data Synchronization**: Ensure status consistency across platforms
-- **External Integration**: Provide status data to partner organizations
-- **Microservice Communication**: Support inter-service communication
+### Integration Scenarios
+- **Mobile App Updates**: Support mobile adoption workflow updates
+- **Web Portal**: Enable online status updates for staff
+- **Automated Systems**: API integration with external adoption platforms
+- **Reporting Integration**: Feed updated data to analytics systems
 
-## 🎯 Integration Examples
+## 🔧 Error Handling
 
-### Pet List Service Integration
-```javascript
-// Check status before displaying pet
-const statusResponse = await fetch(`/adoption/status/${petId}`);
-const statusData = await statusResponse.json();
+### Validation Errors
+- **Invalid Pet ID**: Returns 400 with descriptive message
+- **Invalid Status**: Returns 400 for non-enum status values
+- **Missing Data**: Returns 400 for required field validation
+- **Format Errors**: Returns 400 for malformed request bodies
 
-if (statusData.status === 'not_adopted') {
-  // Show pet as available
-  displayPet(pet);
-}
-```
-
-### Mobile App Integration
-```javascript
-// Real-time status check
-const checkPetStatus = async (petId) => {
-  try {
-    const response = await fetch(`/adoption/status/${petId}`);
-    const status = await response.json();
-    updateUIStatus(status);
-  } catch (error) {
-    handleStatusError(error);
-  }
-};
-```
+### System Errors
+- **Database Connection**: Returns 500 with connection error details
+- **Not Found**: Returns 404 when pet status doesn't exist
+- **Server Errors**: Returns 500 with appropriate error messages
+- **Timeout Handling**: Graceful handling of database timeouts
 
 ---
 
 <div align="center">
   <p><strong>Built with ❤️ for street dogs and cats everywhere 🐕🐱</strong></p>
   <p><em>Helping every pet find their perfect forever home!</em></p>
-  <p>📖 <a href="/statusId-docs">View API Documentation</a></p>
+  <p>📖 <a href="/updateStatus-docs">View API Documentation</a></p>
 </div>
