@@ -1,11 +1,15 @@
 const request = require('supertest');
-const app = require('../app');
-const connectDB = require('../config/db');
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
+const app = require('../app');
 const AdoptionStatus = require('../models/status.model');
 
+let mongoServer;
+
 beforeAll(async () => {
-  await connectDB();
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+  await mongoose.connect(uri);
 });
 
 beforeEach(async () => {
@@ -21,7 +25,8 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.connection.close();
+  await mongoose.disconnect();
+  await mongoServer.stop();
 });
 
 describe('PUT /adoption/status/:petId', () => {
