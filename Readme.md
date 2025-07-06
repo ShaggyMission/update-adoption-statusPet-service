@@ -199,17 +199,6 @@ Complete API documentation is available through Swagger UI at `/updateStatus-doc
 └── server.js                         # Server startup and configuration
 ```
 
-### Environment Setup
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-
-# Server runs on port 3014
-```
-
 ### Testing the API
 ```bash
 # Update adoption status
@@ -222,52 +211,6 @@ curl -X PUT http://localhost:3014/adoption/status/64f8b2a1c3d4e5f6a7b8c9d0 \
 
 # Expected response: 200 OK with updated status object
 ```
-
-## 🔄 Status Update Workflows
-
-### Reservation Process
-1. **Pet Available**: Pet status is "not_adopted"
-2. **Interest Shown**: Update status to "reserved" with adopter details
-3. **Add Notes**: Include reservation details and contact information
-4. **Timestamp Update**: Automatic timestamp for tracking
-
-### Adoption Finalization
-1. **Reserved Pet**: Pet currently has "reserved" status
-2. **Adoption Complete**: Update status to "adopted"
-3. **Final Notes**: Add adoption completion details and new family info
-4. **Success Tracking**: Record successful adoption with timestamp
-
-### Status Corrections
-1. **Reservation Cancelled**: Update "reserved" back to "not_adopted"
-2. **Adoption Reversal**: Update "adopted" back to "not_adopted" (rare cases)
-3. **Information Updates**: Update notes without changing status
-4. **Data Maintenance**: Correct any data inconsistencies
-
-## ⚡ Performance Considerations
-
-### Database Optimization
-- **Indexed Queries**: petId field indexed for efficient lookups
-- **Atomic Updates**: Single database operation for updates
-- **Minimal Data Transfer**: Only send necessary fields
-- **Connection Pooling**: Efficient MongoDB connection management
-
-### Update Efficiency
-- **Single Document Updates**: Efficient MongoDB findOneAndUpdate
-- **Selective Updates**: Only update provided fields
-- **Timestamp Automation**: Automatic timestamp management
-- **Validation Caching**: Efficient enum validation
-
-## 🚀 Future Enhancements
-
-- **Bulk Updates**: Support updating multiple pet statuses
-- **Status History**: Track complete status change history
-- **Conditional Updates**: Update based on current status conditions
-- **Batch Processing**: Handle large-scale status updates
-- **Real-time Notifications**: WebSocket support for live updates
-- **Status Automation**: Automatic status updates based on triggers
-- **Advanced Validation**: Business rule validation for status transitions
-- **Integration Webhooks**: Notify external systems of status changes
-
 ## 📊 Common Use Cases
 
 ### Daily Operations

@@ -23,36 +23,7 @@ paths:
         enables rescue organizations and adoption centers to manage status transitions throughout
         the adoption workflow. The service supports updating status, notes, or both fields with
         automatic timestamp management.
-        
-        **Status Update Features:**
-        - Update existing pet status records by Pet ID
-        - Support for all status transitions (not_adopted ↔ reserved ↔ adopted)
-        - Optional notes updates for additional context
-        - Automatic timestamp tracking for all updates
-        - Comprehensive validation and error handling
-        
-        **Status Types:**
-        - **not_adopted**: Pet is available for adoption
-        - **reserved**: Pet is reserved by a potential adopter
-        - **adopted**: Pet has been successfully adopted
-        
-        **Common Status Transitions:**
-        - not_adopted → reserved (Pet gets reserved by adopter)
-        - reserved → adopted (Adoption is finalized)
-        - reserved → not_adopted (Reservation is cancelled)
-        - adopted → not_adopted (Adoption reversal - rare cases)
-        
-        **Use Cases:**
-        - Update pet availability during adoption process
-        - Manage reservation and adoption workflows
-        - Add contextual notes during status changes
-        - Maintain accurate adoption tracking records
-        
-        **Validation:**
-        - Pet ID must be valid MongoDB ObjectId format
-        - Status must be one of the valid enum values
-        - Automatic timestamp updates for all changes
-        - Comprehensive error handling for edge cases
+
       tags:
         - Adoption Status Update
       parameters:
